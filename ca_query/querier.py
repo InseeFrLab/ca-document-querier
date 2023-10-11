@@ -12,6 +12,10 @@ from utils import fs
 from bearer_auth import BearerAuth
 
 
+class UnauthorizedError(Exception):
+    pass
+
+
 class DocumentQuerier:
     """
     Document querier.
@@ -100,6 +104,8 @@ class DocumentQuerier:
             f"https://registre-national-entreprises.inpi.fr/api/bilans/{identifier}/download",
             auth=self.bearer_auth,
         )
+        if r.status_code == "401":
+            raise UnauthorizedError("Token is not valid anymore.")
 
         with tempfile.TemporaryDirectory() as tmpdirname:
             # CASE 1: .zip file is downloaded
@@ -137,4 +143,7 @@ class DocumentQuerier:
             auth=self.bearer_auth,
         )
         print(r.status_code)
+        # Code 401 if token is invalid ?
+        if r.status_code == "401":
+            raise UnauthorizedError("Token is not valid anymore.")
         return r.json()["bilans"]
