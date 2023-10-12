@@ -8,8 +8,8 @@ from datetime import datetime
 import requests
 import zipfile
 import tempfile
-from utils import fs
-from bearer_auth import BearerAuth
+from ca_query.utils import fs
+from ca_query.bearer_auth import BearerAuth
 
 
 class UnauthorizedError(Exception):

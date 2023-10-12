@@ -24,5 +24,4 @@ setuptools.setup(
         "ca_query",
     ],
     python_requires=">=3.7",
-    package_data={"extraction_core_comptes": ["data/*"]},
 )
