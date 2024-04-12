@@ -89,7 +89,10 @@ class DocumentQuerier:
             if year == year_cloture:
                 document_id = document_metadata["id"]
                 document_type = document_metadata["typeBilan"]
-                document_ids[document_type].append(document_id)
+                if document_type in ["C", "S", "K"]:
+                    document_ids[document_type].append(document_id)
+                else:
+                    document_ids["other"].append(document_id)
         for document_type in ["C", "S", "K", "other"]:
             if document_ids[document_type]:
                 return True, document_ids[document_type][0]
