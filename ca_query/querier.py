@@ -74,19 +74,25 @@ class DocumentQuerier:
         self, siren: str, year: int
     ) -> Tuple[bool, str]:
         """
-        Query a document using the INPI API. Save at save_path.
+        Check availability of "comptes annuels" using the INPI API.
+        Return in priority documents with type C, then S, then K.
 
         Args:
             siren (str): Siren identifier.
             year (int): Year for which document is desired.
         """
         document_list = self.list_documents(siren)
+        document_ids = {"C": [], "S": [], "K": [], "other": []}
         for document_metadata in document_list:
             date_cloture = document_metadata["dateCloture"]
             year_cloture = datetime.strptime(date_cloture, "%Y-%m-%d").year
             if year == year_cloture:
                 document_id = document_metadata["id"]
-                return True, document_id
+                document_type = document_metadata["typeBilan"]
+                document_ids[document_type].append(document_id)
+        for document_type in ["C", "S", "K", "other"]:
+            if document_ids[document_type]:
+                return True, document_ids[document_type][0]
         return False, ""
 
     def download_from_id(
